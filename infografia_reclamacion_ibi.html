@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del Caso IBI 2024 - Recargo Indebido</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-value {
+            color: #005F73;
+        }
+        .kpi-label {
+            color: #0A9396;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #94D2BD;
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-point {
+            position: absolute;
+            left: 10px;
+            top: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid #E9D8A6;
+            background-color: #005F73;
+        }
+        .timeline-point-error {
+            background-color: #AE2012;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #94D2BD;
+        }
+        #loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0A9396;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100" style="background-color: #f0f4f8;">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-2" style="color: #005F73;">Análisis de Recargo Indebido</h1>
+            <p class="text-lg md:text-xl font-medium" style="color: #0A9396;">Caso de Domiciliación del IBI 2024 | Vivienda: C/ Zabaleta, 19</p>
+        </header>
+
+        <main class="space-y-8">
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-center mb-6" style="color: #005F73;">Resumen del Caso en Cifras</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 rounded-lg" style="background-color: #f0f8ff;">
+                        <p class="text-5xl font-black kpi-value">12,88€</p>
+                        <p class="text-md font-semibold kpi-label mt-2">Recargo por Apremio Aplicado</p>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background-color: #f0f8ff;">
+                        <p class="text-5xl font-black kpi-value">257,52€</p>
+                        <p class="text-md font-semibold kpi-label mt-2">Importe Principal del IBI</p>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background-color: #f0f8ff;">
+                        <p class="text-5xl font-black kpi-value">3 de 5</p>
+                        <p class="text-md font-semibold kpi-label mt-2">Cuotas No Cobradas por la Administración</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-center mb-8" style="color: #005F73;">Cronología de los Hechos</h2>
+                <div class="relative max-w-3xl mx-auto pl-12">
+                    <div class="timeline-item relative pb-8">
+                        <div class="timeline-point"></div>
+                        <p class="font-semibold" style="color: #0A9396;">29 de Noviembre, 2023</p>
+                        <p class="text-gray-700">El contribuyente solicita la adhesión al Pago a la Carta (PAC) para domiciliar el IBI 2024 en 5 cuotas.</p>
+                    </div>
+                    <div class="timeline-item relative pb-8">
+                        <div class="timeline-point timeline-point-error"></div>
+                        <p class="font-semibold" style="color: #AE2012;">Enero, Marzo y Mayo, 2024</p>
+                        <p class="text-gray-700">La Administración <span class="font-bold">NO REALIZA</span> el cobro de las 3 primeras cuotas domiciliadas.</p>
+                    </div>
+                    <div class="timeline-item relative pb-8">
+                        <div class="timeline-point"></div>
+                        <p class="font-semibold" style="color: #0A9396;">19 de Junio, 2024</p>
+                        <p class="text-gray-700">El contribuyente interactúa de nuevo con el sistema para intentar solventar la falta de cobros.</p>
+                    </div>
+                     <div class="timeline-item relative pb-8">
+                        <div class="timeline-point"></div>
+                        <p class="font-semibold" style="color: #0A9396;">Julio y Septiembre, 2024</p>
+                        <p class="text-gray-700">La Administración cobra correctamente las cuotas 4 y 5.</p>
+                    </div>
+                    <div class="timeline-item relative pb-8">
+                        <div class="timeline-point timeline-point-error"></div>
+                        <p class="font-semibold" style="color: #AE2012;">Diciembre, 2024</p>
+                        <p class="text-gray-700">La Administración <span class="font-bold">NO REALIZA</span> el cobro de la cuota final de liquidación.</p>
+                    </div>
+                    <div class="timeline-item relative pb-8">
+                        <div class="timeline-point timeline-point-error"></div>
+                        <p class="font-semibold" style="color: #AE2012;">Posteriormente</p>
+                        <p class="text-gray-700">Se emite una providencia de apremio con un recargo de 12,88€ por el impago de la última cuota.</p>
+                    </div>
+                     <div class="timeline-item relative">
+                        <div class="timeline-point"></div>
+                        <p class="font-semibold" style="color: #0A9396;">2 de Octubre, 2025</p>
+                        <p class="text-gray-700">El contribuyente paga el total (principal + recargo) para frenar la deuda y procede a reclamar el importe indebido.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <section class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-center mb-4" style="color: #005F73;">Análisis del Plan de Pagos</h2>
+                    <p class="text-center text-gray-600 mb-6">El gráfico muestra el resultado de las 5 cuotas programadas en el plan de Pago a la Carta. El fallo es evidente: más de la mitad de los cobros no se ejecutaron.</p>
+                    <div class="chart-container">
+                        <canvas id="paymentStatusChart"></canvas>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-center mb-4" style="color: #005F73;">Desglose del Pago Realizado</h2>
+                    <p class="text-center text-gray-600 mb-6">El pago final incluyó el recargo generado por el error administrativo. Este desglose separa el principal legítimo del recargo indebido.</p>
+                    <div class="chart-container">
+                        <canvas id="paymentBreakdownChart"></canvas>
+                    </div>
+                </section>
+            </div>
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-center mb-8" style="color: #005F73;">Flujo de Responsabilidad</h2>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-center">
+                    <div class="p-4 rounded-lg border-2" style="border-color: #0A9396;">
+                        <p class="font-bold" style="color: #005F73;">Contribuyente</p>
+                        <p class="text-sm">Solicita y domicilia el pago en tiempo y forma.</p>
+                        <p class="text-2xl font-bold mt-2" style="color: #0A9396;">✓ CUMPLIDO</p>
+                    </div>
+                    <div class="flow-arrow">➔</div>
+                    <div class="p-4 rounded-lg border-2" style="border-color: #AE2012; background-color: #fff5f5;">
+                        <p class="font-bold" style="color: #AE2012;">Administración</p>
+                        <p class="text-sm">Debe ejecutar los cobros en las fechas establecidas.</p>
+                        <p class="text-2xl font-bold mt-2" style="color: #AE2012;">✗ FALLIDO</p>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="bg-white rounded-lg shadow-lg p-6 md:p-8 space-y-8">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold" style="color: #005F73;">Conclusión y Solicitud</h2>
+                    <p class="max-w-3xl mx-auto mt-4 text-gray-700">La evidencia demuestra que el contribuyente cumplió con sus obligaciones al domiciliar el pago del IBI. La falta de cobro de tres de las cinco cuotas es un error imputable únicamente a la Administración. Por tanto, el recargo de <span class="font-bold">12,88€</span> es indebido.</p>
+                    <p class="max-w-3xl mx-auto mt-4 font-bold" style="color: #005F73;">Se solicita la devolución íntegra del recargo más los intereses de demora correspondientes.</p>
+                </div>
+
+                <div class="text-center border-t-2 pt-8" style="border-color: #94D2BD;">
+                    <h2 class="text-2xl font-bold" style="color: #005F73;">Asesoría Legal con IA ✨</h2>
+                    <p class="max-w-3xl mx-auto mt-4 mb-6 text-gray-700">Utiliza la potencia de Gemini para generar documentos y anticipar escenarios basados en los datos de tu caso.</p>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <button id="geminiButtonClaim" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">✨ Generar Borrador de Reclamación</button>
+                        <button id="geminiButtonArgs" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">✨ Anticipar Argumentos del Ayuntamiento</button>
+                    </div>
+                    <div id="gemini-response-container" class="mt-8 text-left max-w-4xl mx-auto hidden">
+                        <div class="flex justify-between items-center mb-2">
+                             <h3 id="response-title" class="text-lg font-semibold" style="color: #005F73;"></h3>
+                             <button id="copy-button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-bold py-1 px-3 rounded">Copiar</button>
+                        </div>
+                        <div id="gemini-output" class="bg-gray-50 p-4 rounded-lg border border-gray-200 whitespace-pre-wrap font-mono text-sm"></div>
+                        <div id="loader-container" class="flex justify-center items-center p-8">
+                            <div id="loader"></div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script>
+        const tooltipTitleCallback = {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        const paymentStatusCtx = document.getElementById('paymentStatusChart').getContext('2d');
+        new Chart(paymentStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cuotas No Cobradas', 'Cuotas Cobradas Correctamente'],
+                datasets: [{
+                    label: 'Estado de Cuotas',
+                    data: [3, 2],
+                    backgroundColor: ['#AE2012', '#0A9396'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { ...tooltipTitleCallback.plugins, legend: { position: 'bottom' } },
+                cutout: '60%'
+            }
+        });
+
+        const paymentBreakdownCtx = document.getElementById('paymentBreakdownChart').getContext('2d');
+        new Chart(paymentBreakdownCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Principal IBI (257,52€)', 'Recargo Indebido (12,88€)'],
+                datasets: [{
+                    label: 'Desglose del Pago',
+                    data: [257.52, 12.88],
+                    backgroundColor: ['#005F73', '#EE9B00'],
+                    borderColor: '#FFFFFF',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                     ...tooltipTitleCallback.plugins,
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        ...tooltipTitleCallback.plugins.tooltip,
+                        callbacks: {
+                           ...tooltipTitleCallback.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed !== null) {
+                                    label += new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(context.parsed);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const geminiButtonClaim = document.getElementById('geminiButtonClaim');
+        const geminiButtonArgs = document.getElementById('geminiButtonArgs');
+        const geminiResponseContainer = document.getElementById('gemini-response-container');
+        const responseTitle = document.getElementById('response-title');
+        const geminiOutput = document.getElementById('gemini-output');
+        const loaderContainer = document.getElementById('loader-container');
+        const copyButton = document.getElementById('copy-button');
+        
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const caseData = {
+            domicilio: "Calle Zabaleta, 19, Madrid",
+            fechaSolicitudPAC: "29 de noviembre de 2023",
+            cuotasNoCobradas: "Enero, Marzo, Mayo y Diciembre de 2024",
+            cuotasCobradas: "Julio y Septiembre de 2024",
+            recargo: "12,88 euros",
+            principal: "257,52 euros",
+            fechaPagoTotal: "2 de octubre de 2025",
+            totalPagado: "270,40 euros"
+        };
+        
+        const claimPrompt = `Actúa como un experto en derecho administrativo español y redacta un escrito formal de reclamación dirigido al Ayuntamiento de Madrid. Utiliza los siguientes datos para construir el escrito:
+- Domicilio del IBI: ${caseData.domicilio}
+- Hecho clave 1: Se solicitó el Pago a la Carta (PAC) el ${caseData.fechaSolicitudPAC}.
+- Hecho clave 2: El Ayuntamiento no cobró las cuotas de ${caseData.cuotasNoCobradas}.
+- Hecho clave 3: Se generó un recargo de ${caseData.recargo} por un impago que es responsabilidad de la administración.
+- Hecho clave 4: El contribuyente pagó el total de ${caseData.totalPagado} (${caseData.principal} de principal + ${caseData.recargo} de recargo) en fecha ${caseData.fechaPagoTotal}.
+- Solicitud: Devolución del recargo de ${caseData.recargo} por ser un ingreso indebido, más los intereses de demora correspondientes.
+El escrito debe ser claro, conciso, y estar estructurado con secciones de EXPONE y SOLICITA. No incluyas espacios para datos personales como nombre o DNI, céntrate en el cuerpo del texto.`;
+
+        const argsPrompt = `Actúa como un abogado del estado que trabaja para el Ayuntamiento de Madrid. Revisa el siguiente caso y prepara 3 posibles argumentos que usarías para defender la posición del Ayuntamiento y denegar la reclamación del contribuyente. Para cada argumento, sugiere una breve contra-respuesta que el contribuyente podría usar.
+- Domicilio del IBI: ${caseData.domicilio}
+- Reclamación del contribuyente: Pide la devolución de un recargo de ${caseData.recargo} porque el Ayuntamiento no le cobró las cuotas domiciliadas del IBI a tiempo.
+- Defensa del contribuyente: El error es 100% de la administración, él solicitó la domiciliación correctamente.
+Enumera los argumentos y las contra-respuestas de forma clara.`;
+        
+        async function callGeminiAPI(prompt) {
+            geminiOutput.textContent = '';
+            loaderContainer.style.display = 'flex';
+            geminiResponseContainer.classList.remove('hidden');
+
+            try {
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`Error en la API: ${response.statusText}`);
+                }
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    geminiOutput.textContent = text;
+                } else {
+                    geminiOutput.textContent = 'No se pudo obtener una respuesta válida de la IA.';
+                }
+            } catch (error) {
+                console.error("Error al llamar a la API de Gemini:", error);
+                geminiOutput.textContent = 'Hubo un error al procesar la solicitud. Por favor, inténtalo de nuevo más tarde.';
+            } finally {
+                loaderContainer.style.display = 'none';
+            }
+        }
+        
+        geminiButtonClaim.addEventListener('click', () => {
+            responseTitle.textContent = "Borrador del Escrito de Reclamación";
+            callGeminiAPI(claimPrompt);
+        });
+
+        geminiButtonArgs.addEventListener('click', () => {
+            responseTitle.textContent = "Posibles Argumentos del Ayuntamiento y Contra-respuestas";
+            callGeminiAPI(argsPrompt);
+        });
+
+        copyButton.addEventListener('click', () => {
+            const textToCopy = geminiOutput.textContent;
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            copyButton.textContent = '¡Copiado!';
+            setTimeout(() => { copyButton.textContent = 'Copiar'; }, 2000);
+        });
+
+    </script>
+
+</body>
+</html>
+
